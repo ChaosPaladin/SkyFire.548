@@ -1,7 +1,7 @@
 /*
- * Copyright (C) 2011-2015 Project SkyFire <http://www.projectskyfire.org/>
- * Copyright (C) 2008-2015 TrinityCore <http://www.trinitycore.org/>
- * Copyright (C) 2005-2015 MaNGOS <http://getmangos.com/>
+ * Copyright (C) 2011-2016 Project SkyFire <http://www.projectskyfire.org/>
+ * Copyright (C) 2008-2016 TrinityCore <http://www.trinitycore.org/>
+ * Copyright (C) 2005-2016 MaNGOS <http://getmangos.com/>
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -60,6 +60,12 @@
 #  define COMPILER_HAS_CPP11_SUPPORT 1
 #else
 #  define COMPILER_HAS_CPP11_SUPPORT 0
+#endif
+
+#if defined(__cplusplus) && __cplusplus == 201402L
+#  define COMPILER_HAS_CPP14_SUPPORT 1
+#else
+#  define COMPILER_HAS_CPP14_SUPPORT 0
 #endif
 
 #endif

@@ -1,7 +1,7 @@
 /*
- * Copyright (C) 2011-2015 Project SkyFire <http://www.projectskyfire.org/>
- * Copyright (C) 2008-2015 TrinityCore <http://www.trinitycore.org/>
- * Copyright (C) 2005-2015 MaNGOS <http://getmangos.com/>
+ * Copyright (C) 2011-2016 Project SkyFire <http://www.projectskyfire.org/>
+ * Copyright (C) 2008-2016 TrinityCore <http://www.trinitycore.org/>
+ * Copyright (C) 2005-2016 MaNGOS <http://getmangos.com/>
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -428,7 +428,13 @@ void World::LoadConfigSettings(bool reload)
     SetMotd(sConfigMgr->GetStringDefault("Motd", "Welcome to a Trinity Core Server."));
 
     ///- Read ticket system setting from the config file
-    m_bool_configs[CONFIG_ALLOW_TICKETS] = sConfigMgr->GetBoolDefault("AllowTickets", true);
+    m_bool_configs[CONFIG_TICKETS_FEEDBACK_SYSTEM_ENABLED] = sConfigMgr->GetBoolDefault("TicketSystem.FeedBackTickets", true);
+    m_bool_configs[CONFIG_TICKETS_GM_ENABLED]    = sConfigMgr->GetBoolDefault("TicketSystem.GMTickets", true);
+    if (reload)
+    {
+        sTicketMgr->SetFeedBackSystemStatus(m_bool_configs[CONFIG_TICKETS_FEEDBACK_SYSTEM_ENABLED]);
+        sTicketMgr->SetGmTicketSystemStatus(m_bool_configs[CONFIG_TICKETS_GM_ENABLED]);
+    }
 
     ///- Get string for new logins (newly created characters)
     SetNewCharString(sConfigMgr->GetStringDefault("PlayerStart.String", ""));
@@ -1778,10 +1784,13 @@ void World::SetInitialWorldSettings()
     sObjectMgr->LoadFactionChangeTitles();
 
     TC_LOG_INFO("server.loading", "Loading GM tickets...");
-    sTicketMgr->LoadTickets();
+    sTicketMgr->LoadGmTickets();
 
-    TC_LOG_INFO("server.loading", "Loading GM surveys...");
-    sTicketMgr->LoadSurveys();
+    TC_LOG_INFO("server.loading", "Loading Support bugs tickets...");
+    sTicketMgr->LoadBugTickets();
+
+    TC_LOG_INFO("server.loading", "Loading Support suggest tickets...");
+    sTicketMgr->LoadSuggestTickets();
 
     TC_LOG_INFO("server.loading", "Loading client addons...");
     AddonMgr::LoadFromDB();
@@ -1822,6 +1831,15 @@ void World::SetInitialWorldSettings()
 
     TC_LOG_INFO("server.loading", "Loading Calendar data...");
     sCalendarMgr->LoadFromDB();
+
+    TC_LOG_INFO("server.loading", "Loading Research Digsite info...");
+    sObjectMgr->LoadResearchDigsiteInfo();
+
+    TC_LOG_INFO("server.loading", "Loading Archaeology Find info...");
+    sObjectMgr->LoadArchaeologyFindInfo();
+
+    TC_LOG_INFO("server.loading", "Loading Research Project requirements...");
+    sObjectMgr->LoadResearchProjectRequirements();
 
     TC_LOG_INFO("server.loading", "Loading Battle Pet breed data...");
     sObjectMgr->LoadBattlePetBreedData();
@@ -1939,7 +1957,7 @@ void World::SetInitialWorldSettings()
     sObjectMgr->LoadHotfixData();
 
     TC_LOG_INFO("server.loading", "Loading BlackMarket Templates...");
-    sBlackMarketMgr->LoadFromDB();
+    sBlackMarketMgr->LoadBlackMarketTemplates();
 
     TC_LOG_INFO("server.loading", "Loading missing KeyChains...");
     sObjectMgr->LoadMissingKeyChains();

@@ -1,7 +1,7 @@
 /*
- * Copyright (C) 2011-2015 Project SkyFire <http://www.projectskyfire.org/>
- * Copyright (C) 2008-2015 TrinityCore <http://www.trinitycore.org/>
- * Copyright (C) 2005-2015 MaNGOS <http://getmangos.com/>
+ * Copyright (C) 2011-2016 Project SkyFire <http://www.projectskyfire.org/>
+ * Copyright (C) 2008-2016 TrinityCore <http://www.trinitycore.org/>
+ * Copyright (C) 2005-2016 MaNGOS <http://getmangos.com/>
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -58,6 +58,7 @@ EndContentData */
 #include "CellImpl.h"
 #include "SpellAuras.h"
 #include "Pet.h"
+#include "BlackMarketMgr.h"
 
 /*########
 # npc_air_force_bots
@@ -2484,7 +2485,7 @@ public:
 
     bool OnGossipHello(Player* player, Creature* creature)
     {
-        player->GetSession()->SendBlackMarketHello(creature->GetGUID());
+        player->GetSession()->SendBlackMarketHello(creature->GetGUID(), sBlackMarketMgr->isBlackMarketOpen());
         return true;
     }
 };
