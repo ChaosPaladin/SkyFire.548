@@ -1,7 +1,7 @@
 /*
- * Copyright (C) 2011-2016 Project SkyFire <http://www.projectskyfire.org/>
- * Copyright (C) 2008-2016 TrinityCore <http://www.trinitycore.org/>
- * Copyright (C) 2005-2016 MaNGOS <http://getmangos.com/>
+ * Copyright (C) 2011-2017 Project SkyFire <http://www.projectskyfire.org/>
+ * Copyright (C) 2008-2017 TrinityCore <http://www.trinitycore.org/>
+ * Copyright (C) 2005-2017 MaNGOS <https://www.getmangos.eu/>
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
@@ -62,27 +62,27 @@ void BattlePetMgr::LoadFromDb(PreparedQueryResult result)
 
         if (!sBattlePetSpeciesStore.LookupEntry(speciesId))
         {
-            TC_LOG_ERROR("sql.sql", "Species %u defined in `account_battle_pet` for Battle Pet %lu does not exist, skipped.", speciesId, (uint64)id);
+            SF_LOG_ERROR("sql.sql", "Species %u defined in `account_battle_pet` for Battle Pet %lu does not exist, skipped.", speciesId, (uint64)id);
             continue;
         }
 
         if (sBattlePetBreedSet.find(breedId) == sBattlePetBreedSet.end() && breedId != 0)
         {
-            TC_LOG_ERROR("sql.sql", "Breed %u defined in `account_battle_pet` for Battle Pet %lu does not exist, skipped.", breedId, (uint64)id);
+            SF_LOG_ERROR("sql.sql", "Breed %u defined in `account_battle_pet` for Battle Pet %lu does not exist, skipped.", breedId, (uint64)id);
             continue;
         }
 
         // highest quality client supports, currently players can not obtain legendary pets on retail
         if (quality > ITEM_QUALITY_LEGENDARY)
         {
-            TC_LOG_ERROR("sql.sql", "Quality %u defined in `account_battle_pet` for Battle Pet %lu is invalid, skipped.", quality, (uint64)id);
+            SF_LOG_ERROR("sql.sql", "Quality %u defined in `account_battle_pet` for Battle Pet %lu is invalid, skipped.", quality, (uint64)id);
             continue;
         }
 
         // client supports up to level 255 (uint8)
         if (level > BATTLE_PET_MAX_LEVEL)
         {
-            TC_LOG_ERROR("sql.sql", "Level %u defined in `account_battle_pet` for Battle Pet %lu is invalid, skipped.", quality, (uint64)id);
+            SF_LOG_ERROR("sql.sql", "Level %u defined in `account_battle_pet` for Battle Pet %lu is invalid, skipped.", quality, (uint64)id);
             continue;
         }
 
@@ -189,7 +189,7 @@ void BattlePetMgr::LoadSlotsFromDb(PreparedQueryResult result)
 
     for (std::set<uint8>::const_iterator citr = slotErrors.begin(); citr != slotErrors.end(); citr++)
     {
-        TC_LOG_ERROR("sql.sql", "Battle Pet slot %u in `account_battle_pet_slots` for account %u is invalid!",
+        SF_LOG_ERROR("sql.sql", "Battle Pet slot %u in `account_battle_pet_slots` for account %u is invalid!",
             *citr, m_owner->GetSession()->GetAccountId());
     }
 
@@ -593,7 +593,7 @@ void BattlePetMgr::SendBattlePetUpdate(BattlePet* battlePet, bool notification)
     if (!creatureTemplate)
         return;
 
-    WorldPacket data(SMSG_BATTLE_PET_UPDATE, 4 + 1 + 8 + battlePet->GetNickname().size() + 4 + 4 + 4 + 4 + 2 + 4 + 4 + 1 + 2 + 2 + 4 + 2);
+    WorldPacket data(SMSG_BATTLE_PET_PET_UPDATES, 4 + 1 + 8 + battlePet->GetNickname().size() + 4 + 4 + 4 + 4 + 2 + 4 + 4 + 1 + 2 + 2 + 4 + 2);
     data.WriteBits(1, 19);
     data.WriteBit(petEntry[4]);
     data.WriteBit(petEntry[1]);
